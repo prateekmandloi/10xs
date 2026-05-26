@@ -1,9 +1,18 @@
 ---
 name: pr-re-review
-description: Portable pull-request re-review workflow after updates. Use when an agent is asked to check a PR again, verify whether review comments were addressed, inspect only the latest delta, decide what still blocks merge, or produce an updated review after new commits on any GitHub, Bitbucket, GitLab, internal forge, or local repository workflow.
+description: Portable pull-request re-review workflow after updates, combining prior-comment verification with a full current-head review. Use when an agent is asked to check a PR again, verify whether review comments were addressed, inspect the latest delta, decide what still blocks merge, or produce an updated review after new commits on any GitHub, Bitbucket, GitLab, internal forge, or local repository workflow.
 ---
 
 # PR Re-review
+
+## Review Contract
+
+A re-review is not only a closure checklist. It has two required passes:
+
+1. Verify whether prior review comments were addressed.
+2. Review the full current PR head against the target branch with the same critical lens as a fresh review.
+
+Do not approve based on comment closure alone. The current head may still contain previously missed issues, new regressions, bad conflict resolutions, stale generated artifacts, dependency drift, or untouched changed files that deserve blockers or non-blocking findings.
 
 ## Portability Contract
 
@@ -42,6 +51,14 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Do not call something a blocker if the target branch already has the same unresolved behavior; classify it as a repo/codebase gap unless the PR worsens it.
    - If documentation, prompt, or skill/reference files changed, consider size or token growth against the base when the repo treats prompt budget as a constraint.
 
+5. Review the full current head before approving.
+   - Inspect the full changed-file set, not only files touched after the last review.
+   - Re-check contracts, tests, docs, generated artifacts, lockfiles, build/package metadata, migrations, runtime/shipped paths, and ownership boundaries.
+   - Look for previously missed issues as well as new issues introduced by the fix.
+   - Pay extra attention when the PR is large, stacked, rebased, conflict-resolved, security-sensitive, dependency-heavy, or the earlier review had few or no findings.
+   - Call out unnecessary complexity, redundancy, or over-engineering when it creates a correctness, maintainability, security, or operational risk.
+   - If a finding is merge-blocking, include a brief severity rationale explaining why it must block merge rather than land as a follow-up. If that rationale is weak, downgrade it or ask a question.
+
 ## Output Shape
 
 Prefer a concise delta report:
@@ -58,11 +75,14 @@ Still blocking
 New findings
 - [P2] ...
 
+Previously missed findings
+- [P2] ...
+
 Validation
 - ...
 ```
 
-If posting back to a PR, keep the comment short and non-redundant. Reference the old thread or concern rather than repeating the full original review.
+If posting back to a PR, keep the comment short and non-redundant. Reference the old thread or concern rather than repeating the full original review, but include any still-relevant issue found during the full current-head pass.
 
 If all prior review comments look fixed, say that directly before listing any residual risk. If nothing remains, say there are no remaining blockers and no new non-blockers.
 

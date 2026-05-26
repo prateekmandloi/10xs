@@ -12,7 +12,7 @@ line, and review conventions at runtime.
 | Skill | Purpose |
 | --- | --- |
 | [`code/pr-review`](code/pr-review/SKILL.md) | First-pass pull-request review with live PR context, comment dedupe, findings, validation, and optional review posting. |
-| [`code/pr-re-review`](code/pr-re-review/SKILL.md) | Follow-up review after changes, focused on prior comments, deltas, remaining blockers, and new risk. |
+| [`code/pr-re-review`](code/pr-re-review/SKILL.md) | Follow-up review after changes, combining prior-comment verification with a full current-head review for remaining, new, or previously missed risk. |
 | [`code/pr-refresh`](code/pr-refresh/SKILL.md) | Safely address review feedback, refresh branches, validate, push, and summarize what changed. |
 | [`code/scan-prs`](code/scan-prs/SKILL.md) | Scan pull requests for review, re-review, response, refresh, merge, close, or watch actions. |
 
