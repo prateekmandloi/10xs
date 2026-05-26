@@ -36,6 +36,7 @@ Treat this skill as a workflow template, not a repo-specific playbook.
 4. Review for behavioral risk first.
    - Prioritize correctness, data loss, security, auth, permissions, routing, API contracts, migrations, concurrency, reliability, observability, backward compatibility, generated artifacts, and test coverage.
    - Avoid style, naming, readability, and cosmetic feedback unless it creates a real maintenance or behavior risk.
+   - Call out unnecessary complexity, redundancy, or over-engineering when it creates a correctness, maintainability, security, or operational risk.
    - Treat missing tests as important when they protect a changed contract, bug fix, authorization boundary, migration, or user-facing flow.
    - For agent-facing tools, CLIs, APIs, or generated instructions, prefer machine-safe contracts over human-friendly interaction patterns when they conflict.
    - If documentation, prompt, or skill/reference files changed, consider size or token growth against the base and flag unjustified growth when the repo treats prompt budget as a constraint.
@@ -44,6 +45,7 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Open the exact file and line range.
    - Trace the call path or data contract far enough to prove the behavior.
    - Run focused tests or static checks when practical. If full validation is too expensive or blocked, say what was and was not verified.
+   - Before saying there are no findings or approving, scan the full changed-file set for contracts, tests, docs, generated artifacts, lockfiles, build/package metadata, runtime/shipped paths, and ownership boundaries.
 
 ## Finding Standard
 
@@ -56,6 +58,7 @@ Each finding should include:
 - The failing scenario or contract.
 - Why the current change creates or exposes the risk.
 - The smallest useful fix direction.
+- For merge-blocking findings, a brief severity rationale explaining why it should block merge rather than land as a follow-up.
 
 Use this severity guide:
 
