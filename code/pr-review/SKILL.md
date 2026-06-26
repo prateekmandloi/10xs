@@ -34,17 +34,20 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Check whether a suspected problem already exists on the target branch. If it does, frame it as an existing codebase gap unless the PR worsens it.
 
 4. Review for behavioral risk first.
+   - Identify the PR's functional area before judging it: auth, permissions, CLI/API contract, install/release, UI, migration, workflow automation, data model, performance, docs-only, tests-only, or generated assets. Weight the review lens toward that area instead of applying every checklist equally.
    - Prioritize correctness, data loss, security, auth, permissions, routing, API contracts, migrations, concurrency, reliability, observability, backward compatibility, generated artifacts, and test coverage.
    - Avoid style, naming, readability, and cosmetic feedback unless it creates a real maintenance or behavior risk.
    - Call out unnecessary complexity, redundancy, or over-engineering when it creates a correctness, maintainability, security, or operational risk.
    - Treat missing tests as important when they protect a changed contract, bug fix, authorization boundary, migration, or user-facing flow.
    - For agent-facing tools, CLIs, APIs, or generated instructions, prefer machine-safe contracts over human-friendly interaction patterns when they conflict.
    - If documentation, prompt, or skill/reference files changed, consider size or token growth against the base and flag unjustified growth when the repo treats prompt budget as a constraint.
+   - For process, pipeline, release, permission, or cross-repo workflow changes, briefly fast-forward the post-merge behavior and ask what could fail once real users, reviewers, automation, or branch protection interact with it. Use this only when the blast radius justifies it; do not turn small local changes into over-engineering exercises.
 
 5. Verify findings before presenting them.
    - Open the exact file and line range.
    - Trace the call path or data contract far enough to prove the behavior.
    - Run focused tests or static checks when practical. If full validation is too expensive or blocked, say what was and was not verified.
+   - Check for manual or live validation evidence when the PR changes a user-facing command, auth/setup flow, deployment path, data mutation, external integration, or other behavior automated tests cannot fully prove. Missing proof is a blocker only when the changed behavior needs real-environment validation before merge; for test-only, docs-only, or low-risk internal refactors, do not manufacture a live-test task.
    - Before saying there are no findings or approving, scan the full changed-file set for contracts, tests, docs, generated artifacts, lockfiles, build/package metadata, runtime/shipped paths, and ownership boundaries.
 
 ## Finding Standard
@@ -104,11 +107,13 @@ Validation: ...
 If posting a formal review in a repo with review tasks or approval state:
 
 - Use exactly one main review summary unless inline comments are requested.
+- Use human-readable Markdown structure: short headings, concise bullets, and clear blocker/non-blocker sections.
 - Separate blockers and non-blockers clearly.
 - Do not use checkboxes in the posted review unless the repo expects them.
 - Do not mention local paths, temp paths, hidden artifacts, investigation mechanics, or private workspace details.
 - If there are blockers, do not approve.
 - If there are no blockers and the user asked for a merge-readiness action, approve only when the local workflow and permissions make that appropriate.
+- If you already approved and later find blockers, withdraw or remove that approval when the forge supports it and the user expects active review-state management.
 - If approval, task creation, or comment posting fails because of tooling or permissions, report that explicitly.
 
 ## Personalization Knobs
