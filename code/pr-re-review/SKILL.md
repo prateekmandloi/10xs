@@ -50,13 +50,16 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Re-run focused validation that maps to the changed behavior.
    - Do not call something a blocker if the target branch already has the same unresolved behavior; classify it as a repo/codebase gap unless the PR worsens it.
    - If documentation, prompt, or skill/reference files changed, consider size or token growth against the base when the repo treats prompt budget as a constraint.
+   - Re-check manual or live validation evidence when the updated PR changes a user-facing command, auth/setup flow, deployment path, data mutation, external integration, or other behavior automated tests cannot fully prove. Treat missing proof as blocking only when the latest behavior needs real-environment validation before merge.
 
 5. Review the full current head before approving.
    - Inspect the full changed-file set, not only files touched after the last review.
+   - Identify the PR's functional area and weight the full-head review toward the relevant risks: auth, permissions, CLI/API contract, install/release, UI, migration, workflow automation, data model, performance, docs-only, tests-only, or generated assets.
    - Re-check contracts, tests, docs, generated artifacts, lockfiles, build/package metadata, migrations, runtime/shipped paths, and ownership boundaries.
    - Look for previously missed issues as well as new issues introduced by the fix.
    - Pay extra attention when the PR is large, stacked, rebased, conflict-resolved, security-sensitive, dependency-heavy, or the earlier review had few or no findings.
    - Call out unnecessary complexity, redundancy, or over-engineering when it creates a correctness, maintainability, security, or operational risk.
+   - For process, pipeline, release, permission, or cross-repo workflow changes, briefly fast-forward the post-merge behavior and check likely failure modes from real users, automation, reviewers, or branch protection. Keep this blast-radius based; do not require heavyweight redesign for small local changes.
    - If a finding is merge-blocking, include a brief severity rationale explaining why it must block merge rather than land as a follow-up. If that rationale is weak, downgrade it or ask a question.
 
 ## Output Shape
@@ -89,9 +92,11 @@ If all prior review comments look fixed, say that directly before listing any re
 For posted follow-up reviews:
 
 - Use exactly one main review summary unless the repo expects thread-by-thread replies.
+- Use human-readable Markdown structure: short headings, concise bullets, and clear remaining/new finding sections.
 - Do not repeat fixed issues except as a short status line.
 - Keep review-address tasks open or resolve them according to the repo's policy.
 - If there are no blockers and the user asked for merge-readiness action, approve only when the local workflow and permissions make that appropriate.
+- If you previously approved but the re-review finds blockers, withdraw or remove that approval when the forge supports it and the user expects active review-state management.
 - If approval, task creation, or comment posting fails because of tooling or permissions, report that explicitly.
 
 ## Personalization Knobs
