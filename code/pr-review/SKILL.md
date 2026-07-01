@@ -45,24 +45,26 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Read repo policy files when the PR touches workflow, tests, auth, install/release, docs, generated instructions, or command/API surfaces.
    - Identify the PR's functional area before judging it: auth, permissions, CLI/API contract, install/release, UI, migration, workflow automation, data model, performance, docs-only, tests-only, or generated assets. Weight the review lens toward that area instead of applying every checklist equally.
    - Prioritize correctness, data loss, security, auth, permissions, routing, API contracts, migrations, concurrency, reliability, observability, backward compatibility, generated artifacts, and test coverage.
-   - Avoid style, naming, readability, and cosmetic feedback unless it creates a real maintenance or behavior risk.
+   - Do not nitpick. Avoid style, naming, readability, wording, and cosmetic feedback unless it creates a real correctness, contract, security, usability, maintenance, or operational risk.
    - Call out unnecessary complexity, redundancy, or over-engineering when it creates a correctness, maintainability, security, or operational risk.
    - Treat missing tests as important when they protect a changed contract, bug fix, authorization boundary, migration, or user-facing flow.
    - For agent-facing tools, CLIs, APIs, or generated instructions, prefer machine-safe contracts over human-friendly interaction patterns when they conflict.
    - If documentation, prompt, or skill/reference files changed, consider size or token growth against the base and flag unjustified growth when the repo treats prompt budget as a constraint.
    - For process, pipeline, release, permission, or cross-repo workflow changes, briefly fast-forward the post-merge behavior and ask what could fail once real users, reviewers, automation, or branch protection interact with it. Use this only when the blast radius justifies it; do not turn small local changes into over-engineering exercises.
+   - Run an explicit P0/P1 pass before settling on lower severity: ask whether the changed surface can break a shipped command/API contract, expose data or credentials, bypass auth or approval policy, corrupt state, strand users after release, break install/update/setup, or make automation merge an invalid state. Absence of P0/P1 is acceptable only after this pass, not by defaulting to lenient severities.
    - Classify each concern as a blocker, non-blocker, or repo/codebase gap. Do not call something a PR blocker when the target branch already has the same unresolved behavior.
 
 5. Verify findings before presenting them.
    - Open the exact file and line range.
    - Trace the call path or data contract far enough to prove the behavior.
    - Run focused tests or static checks when practical. If full validation is too expensive or blocked, say what was and was not verified.
-   - Check for manual or live validation evidence when the PR changes a user-facing command, auth/setup flow, deployment path, data mutation, external integration, or other behavior automated tests cannot fully prove. Missing proof is a blocker only when the changed behavior needs real-environment validation before merge; for test-only, docs-only, or low-risk internal refactors, do not manufacture a live-test task.
+   - Check the PR description or review artifacts for manual/live validation evidence when the PR changes a user-facing command, API, auth/setup flow, deployment path, data mutation, external integration, or other behavior automated tests cannot fully prove. Expected evidence usually includes the exact command/request tested, auth or permission mode, output/screenshot or pasted proof, environment, and scopes/permissions when relevant. Missing proof is a blocker only when repo policy or the changed behavior needs real-environment validation before merge; for test-only, docs-only, or low-risk internal refactors, do not manufacture a live-test task.
    - Before saying there are no findings or approving, scan the full changed-file set for contracts, tests, docs, generated artifacts, lockfiles, build/package metadata, runtime/shipped paths, and ownership boundaries.
 
 ## Finding Standard
 
 Only report a finding when it is actionable, grounded in evidence, and likely to matter.
+Do not report nits or preference-only comments.
 
 ## Functional Area Lenses
 
@@ -88,7 +90,7 @@ Each finding should include:
 Use this severity guide:
 
 - `P0`: blocks release, causes data loss, broad security failure, or total outage.
-- `P1`: likely user-visible breakage, auth/privacy issue, major regression, or migration hazard.
+- `P1`: likely user-visible breakage, auth/privacy issue, major regression, migration hazard, or merge-blocking contract error in a command/API/agent-facing workflow that would be costly to fix after merge.
 - `P2`: real correctness, reliability, or maintainability issue that should be fixed before merge if feasible.
 - `P3`: low-risk follow-up, hardening, or test improvement.
 
@@ -119,14 +121,17 @@ Code review summary
 
 I found one blocker and one non-blocking follow-up.
 
-Blocker:
+Blockers:
 - ...
 
-Non-blocker:
+Non-blockers:
 - ...
 
 Validation: ...
 ```
+
+Use this blockers/non-blockers structure for posted comments unless the repo has
+a more specific required review format.
 
 If posting a formal review in a repo with review tasks or approval state:
 
@@ -142,7 +147,9 @@ If posting a formal review in a repo with review tasks or approval state:
 
 ## PR Comment And Task Workflow
 
-When the user asks to post the review or take review action:
+When the user asks to review a specific live PR, default to taking review action
+unless they explicitly ask for local-only, draft-only, or no posting. When the
+user asks to post the review or take review action:
 
 - Post exactly one main PR comment. Use the repo's expected title or default to `Code review summary`.
 - Include only net-new findings still relevant on the current head.
@@ -150,10 +157,10 @@ When the user asks to post the review or take review action:
 - Do not post approval-state words such as `ACCEPTED` or `REJECTED` unless the forge requires them.
 - Do not use checkboxes unless the repo explicitly expects them.
 - Do not mention reviewer names, personas, hidden process, or investigation mechanics.
-- Ensure there is exactly one open review-address task when the repo supports tasks and the local policy expects one. Treat the task text as a repo-local runtime input; default to `Address review comments before merge.` only when no better local convention exists.
+- Ensure there is exactly one open review-address task when there is any blocker or request-changes-worthy finding and the repo supports tasks. Treat the task text as a repo-local runtime input; default to `Address review comments before merge.` only when no better local convention exists.
 - If an equivalent open task already exists, do not create another.
 - If there are blockers, do not approve and keep the review-address task open.
-- If there are no blockers and no major non-blockers, approve only when the repo-local approval policy permits it; keep or resolve the review-address task according to repo policy.
+- If there are no blockers and no major non-blockers, approve only when the repo-local approval policy permits it; actively approve through the repo's review tool when permissions and tooling allow it. Keep or resolve the review-address task according to repo policy.
 - If approval, task creation, or comment posting fails because of tooling or permissions, report that explicitly in the final user update.
 
 ## Output Hygiene

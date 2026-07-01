@@ -58,9 +58,12 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Re-check contracts, tests, docs, generated artifacts, lockfiles, build/package metadata, migrations, runtime/shipped paths, and ownership boundaries.
    - Look for previously missed issues as well as new issues introduced by the fix.
    - Pay extra attention when the PR is large, stacked, rebased, conflict-resolved, security-sensitive, dependency-heavy, or the earlier review had few or no findings.
+   - Do not nitpick. Avoid style, naming, readability, wording, and cosmetic feedback unless it creates a real correctness, contract, security, usability, maintenance, or operational risk.
    - Call out unnecessary complexity, redundancy, or over-engineering when it creates a correctness, maintainability, security, or operational risk.
    - Re-apply portable functional-area lenses from a fresh review: contract surfaces, runtime boundaries, auth/security/permissions, data/content mutation, search/discovery/ranking, release/install/packaging/CI, and docs-only or tests-only contract drift. Use only the lenses relevant to the PR; do not turn every re-review into a broad architecture audit.
    - For process, pipeline, release, permission, or cross-repo workflow changes, briefly fast-forward the post-merge behavior and check likely failure modes from real users, automation, reviewers, or branch protection. Keep this blast-radius based; do not require heavyweight redesign for small local changes.
+   - Run an explicit P0/P1 pass before accepting a lower-severity outcome: ask whether the latest head can break a shipped command/API contract, expose data or credentials, bypass auth or approval policy, corrupt state, strand users after release, break install/update/setup, or let automation merge an invalid state. Absence of P0/P1 is acceptable only after this pass.
+   - Re-check the PR description or review artifacts for manual/live validation evidence when the latest head changes a user-facing command, API, auth/setup flow, deployment path, data mutation, external integration, or other behavior automated tests cannot fully prove. Expected evidence usually includes the exact command/request tested, auth or permission mode, output/screenshot or pasted proof, environment, and scopes/permissions when relevant.
    - If a finding is merge-blocking, include a brief severity rationale explaining why it must block merge rather than land as a follow-up. If that rationale is weak, downgrade it or ask a question.
    - Apply the same finding bar, output hygiene, manual-validation expectations, and repo-local approval policy as `pr-review`.
 
@@ -104,18 +107,20 @@ If all prior review comments look fixed, say that directly before listing any re
 
 For posted follow-up reviews:
 
+- When the user asks to re-review a specific live PR, default to taking review action unless they explicitly ask for local-only, draft-only, or no posting.
 - Use exactly one main review summary unless the repo expects thread-by-thread replies.
-- Use human-readable Markdown structure: short headings, concise bullets, and clear remaining/new finding sections.
+- Use human-readable Markdown structure: short headings, concise bullets, and clear `Blockers` and `Non-blockers` sections unless the repo has a stricter native format.
 - Do not repeat fixed issues except as a short status line.
 - Keep review-address tasks open or resolve them according to the repo's policy.
 - If there are no blockers, no major non-blockers, and the user asked for merge-readiness action, approve only when the local workflow, permissions, and repo-local approval policy make that appropriate.
+- If approval is warranted by repo-local policy, actively approve through the repo's review tool when permissions and tooling allow it.
 - If you previously approved but the re-review finds blockers, withdraw or remove that approval when the forge supports it and the user expects active review-state management.
 - If approval, task creation, or comment posting fails because of tooling or permissions, report that explicitly.
 
 When posting a follow-up to a PR that already has a review-address task, reuse
-that task instead of creating another. If the repo policy expects a task and
-none exists, create exactly one equivalent task before approving or leaving the
-PR blocked.
+that task instead of creating another. If there is any blocker or
+request-changes-worthy finding and none exists, create exactly one equivalent
+task before leaving the PR blocked.
 
 ## Personalization Knobs
 

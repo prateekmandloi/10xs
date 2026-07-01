@@ -38,6 +38,7 @@ Treat this skill as a workflow template, not a repo-specific dashboard.
    - `Merge/land`: user's PR is approved and checks are green, but still open.
    - `Close/drop`: PR appears obsolete, superseded, or already landed elsewhere.
    - `Watch`: relevant but no immediate user action.
+   - Do not elevate nit-only or preference-only comments into review, re-review, refresh, or escalation work unless they create a real correctness, contract, security, usability, maintenance, or operational risk.
 
 4. Prioritize.
    - Rank blockers, requested reviews, failing owner PRs, merge-ready PRs, and stale high-value PRs above passive watch items.
