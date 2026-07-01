@@ -97,6 +97,24 @@ workflow should still answer: resolve current head, read existing discussion,
 compare against the correct base, review behavioral risk, verify findings, post
 clean repo-facing output, and handle approval conservatively.
 
+## Keeping Generic Skills Deep Without Making Them Repo-Specific
+
+When a repo-local skill becomes much stronger than the 10xs version, promote
+the lesson back as an abstract review lens rather than copying repo nouns.
+
+- Keep the generic skill responsible for reusable reasoning patterns: contract
+  surfaces, runtime boundaries, auth/security/permissions, data/content
+  mutation, search/discovery/ranking, release/install/packaging/CI, validation,
+  output hygiene, task handling, and guarded approval.
+- Keep the repo-local skill responsible for concrete facts: product names,
+  command names, policy files, exact task text, reviewer allowlists, CI job
+  names, package-manager commands, local docs, and product-specific risk areas.
+- Sync related workflow skills together. If `pr-review` learns a new generic
+  review lens, check whether `pr-re-review` needs the same full-head lens and
+  whether `pr-refresh` needs the corresponding fix/validation guidance.
+- Avoid checklist bloat. Add a generic lens only when it changes review quality
+  across more than one repo or prevents a recurring class of missed findings.
+
 When adapting a comprehensive review recipe from one repo to another:
 
 1. Extract the generic workflow into the 10xs skill first.
