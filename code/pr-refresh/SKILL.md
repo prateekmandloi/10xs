@@ -33,6 +33,7 @@ Treat this skill as a workflow template, not a repo-specific playbook.
 3. Triage reviewer feedback when present.
    - Build a private checklist of every unresolved comment, task, failed check, review-address task, and reviewer request.
    - Deduplicate repeated feedback.
+   - Do not nitpick. Ignore or politely decline style, naming, readability, wording, and cosmetic feedback unless it creates a real correctness, contract, security, usability, maintenance, or operational risk.
    - Classify each item as `fix`, `pushback`, `question`, or `defer`.
    - For `fix`, make the smallest correct code, test, or doc change.
    - For `pushback`, reply concisely with evidence when the comment is incorrect, stale, already handled, or conflicts with the intended architecture.
@@ -54,13 +55,14 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - For runtime-boundary fixes, include validation for the relevant host assumptions: environment, network/fetch, storage, auth, cancellation/timeouts, filesystem, global state, and concurrency.
    - For release/install/package fixes, check the actual package-manager, workspace, lockfile, generated-artifact, publish, installer, docs/changelog, and CI path that would run after merge.
    - For docs-only or tests-only feedback, verify the artifact now matches the runtime contract; do not add unrelated live-validation burden unless behavior changed.
+   - For new or modified user-facing commands, APIs, auth/setup flows, deployment paths, data mutations, external integrations, or other behavior automated tests cannot fully prove, ensure the PR description or review artifacts include the repo-required manual/live evidence before declaring the refresh complete. Expected evidence usually includes the exact command/request tested, auth or permission mode, output/screenshot or pasted proof, environment, and scopes/permissions when relevant.
 
 6. Commit, push, and update review state.
    - Follow repo commit rules. Stage only files for the current PR.
    - Add changelog, changeset, release note, or session log artifacts only when the repo expects them.
    - Use `--force-with-lease` for rebased branches.
    - Verify the PR now points at the pushed head and checks have started or passed when available.
-   - Post one concise summary comment when the workflow expects it: addressed items, pushed-back items, questions, validation, commit hash, and remaining blockers.
+   - Post one concise summary comment when the workflow expects it: blockers, non-blockers, addressed items, pushed-back items, questions, validation, commit hash, and remaining blockers.
    - Reuse the existing review-address task instead of creating duplicates.
    - Resolve or leave review-address tasks according to repo policy only after each tracked item is handled by a fix, pushback reply, clarifying question, or explicit deferral.
    - Summarize relevance, refresh method, comments handled, conflicts, validation, pushed state, and remaining risks.
@@ -135,11 +137,19 @@ When posting back to the PR, keep it repo-facing and concise:
 ```markdown
 Review comments addressed.
 
+Blockers:
 - Addressed: <short list>
-- Clarified/pushed back: <short list, if any>
-- Questions: <short list, if any>
-- Validation: <commands or CI signal>
-- Commit: <hash>
+- Remaining: <short list, if any>
+
+Non-blockers:
+- Addressed: <short list, if any>
+- Deferred/pushed back: <short list, if any>
+
+Questions:
+- <short list, if any>
+
+Validation: <commands or CI signal>
+Commit: <hash>
 ```
 
 Do not include local paths, temp paths, hidden artifact names, session IDs, or private investigation mechanics.
