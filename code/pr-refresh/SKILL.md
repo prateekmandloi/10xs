@@ -1,6 +1,6 @@
 ---
 name: pr-refresh
-description: Portable pull-request refresh workflow. Use when an agent is asked to check whether a PR is still relevant, address reviewer feedback, reply to review comments, update it from the target branch, rebase or merge latest main, resolve conflicts, regenerate artifacts, run validation, push with lease, post an addressed-comments summary, or close out an old branch without losing local work.
+description: Portable pull-request refresh workflow with reviewer-feedback triage, safe branch update, validation, review-task state handling, and concise PR summary posting. Use when an agent is asked to check whether a PR is still relevant, address reviewer feedback, reply to review comments, update it from the target branch, rebase or merge latest main, resolve conflicts, regenerate artifacts, run validation, push with lease, post an addressed-comments summary, or close out an old branch without losing local work.
 ---
 
 # PR Refresh
@@ -31,7 +31,7 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Never mix fixes for different PRs in one branch or commit unless the repo explicitly uses stacked PRs.
 
 3. Triage reviewer feedback when present.
-   - Build a private checklist of every unresolved comment, task, failed check, and reviewer request.
+   - Build a private checklist of every unresolved comment, task, failed check, review-address task, and reviewer request.
    - Deduplicate repeated feedback.
    - Classify each item as `fix`, `pushback`, `question`, or `defer`.
    - For `fix`, make the smallest correct code, test, or doc change.
@@ -57,7 +57,8 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Use `--force-with-lease` for rebased branches.
    - Verify the PR now points at the pushed head and checks have started or passed when available.
    - Post one concise summary comment when the workflow expects it: addressed items, pushed-back items, questions, validation, commit hash, and remaining blockers.
-   - Resolve review-address tasks only after each tracked item is handled by a fix, pushback reply, clarifying question, or explicit deferral.
+   - Reuse the existing review-address task instead of creating duplicates.
+   - Resolve or leave review-address tasks according to repo policy only after each tracked item is handled by a fix, pushback reply, clarifying question, or explicit deferral.
    - Summarize relevance, refresh method, comments handled, conflicts, validation, pushed state, and remaining risks.
 
 ## Stop Conditions
