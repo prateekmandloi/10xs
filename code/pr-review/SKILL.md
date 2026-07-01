@@ -157,7 +157,7 @@ user asks to post the review or take review action:
 - Do not post approval-state words such as `ACCEPTED` or `REJECTED` unless the forge requires them.
 - Do not use checkboxes unless the repo explicitly expects them.
 - Do not mention reviewer names, personas, hidden process, or investigation mechanics.
-- Ensure there is exactly one open review-address task when there is any blocker or request-changes-worthy finding and the repo supports tasks. Treat the task text as a repo-local runtime input; default to `Address review comments before merge.` only when no better local convention exists.
+- Ensure there is exactly one open review-address task when there is any blocker or request-changes-worthy finding and the repo supports tasks. Treat task text as a repo-local runtime input; do not bake one repository's exact wording into the generic skill.
 - If an equivalent open task already exists, do not create another.
 - If there are blockers, do not approve and keep the review-address task open.
 - If there are no blockers and no major non-blockers, approve only when the repo-local approval policy permits it; actively approve through the repo's review tool when permissions and tooling allow it. Keep or resolve the review-address task according to repo policy.
