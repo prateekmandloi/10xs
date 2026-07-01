@@ -1,9 +1,16 @@
 ---
 name: pr-review
-description: Portable pull-request review workflow with live repository and PR context. Use when an agent is asked to review a PR, inspect a change for blockers or risks, prepare review feedback, post a review comment, or produce a non-redundant action-oriented code review for any GitHub, Bitbucket, GitLab, internal forge, or local repository workflow.
+description: Portable first-pass pull-request review workflow with live repository and PR context, current-head analysis, comment dedupe, behavioral risk focus, review-task handling, one-summary-comment posting, and guarded approval. Use when an agent is asked to review a fresh PR or branch diff, inspect a change for blockers or risks, prepare or post review feedback, create review-address tasks, approve an unblocked PR, or produce a non-redundant action-oriented code review for any GitHub, Bitbucket, GitLab, internal forge, or local repository workflow; use pr-re-review instead when prior review comments were addressed and the user asks for a follow-up.
 ---
 
 # PR Review
+
+## Overview
+
+Use this workflow for fresh, first-pass PR reviews that have not yet gone
+through this review workflow. Resolve the current PR head, understand the
+changed contract before judging it, focus on actionable behavioral risk, and
+keep repo-facing output crisp.
 
 ## Portability Contract
 
@@ -19,7 +26,7 @@ Treat this skill as a workflow template, not a repo-specific playbook.
 
 1. Resolve the PR source of truth before inspecting code.
    - Identify the forge and repo from the URL, branch, local remote, issue text, or available CLI.
-   - Fetch live PR metadata: title, description, author, source branch, target branch, current head SHA, checks, approvals, changed files, diff, and existing comments.
+   - Fetch live PR metadata: title, description, author, source branch, target branch, current head SHA, checks, approvals, changed files, diff, tasks, linked issues, and existing comments.
    - If live fetching is unavailable, state the limitation and use local commits or provided diff only.
 
 2. Read existing comments before forming findings.
@@ -34,6 +41,8 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Check whether a suspected problem already exists on the target branch. If it does, frame it as an existing codebase gap unless the PR worsens it.
 
 4. Review for behavioral risk first.
+   - Understand public contracts, command or API grammar, constraints, and current architecture before judging changes to user-facing surfaces.
+   - Read repo policy files when the PR touches workflow, tests, auth, install/release, docs, generated instructions, or command/API surfaces.
    - Identify the PR's functional area before judging it: auth, permissions, CLI/API contract, install/release, UI, migration, workflow automation, data model, performance, docs-only, tests-only, or generated assets. Weight the review lens toward that area instead of applying every checklist equally.
    - Prioritize correctness, data loss, security, auth, permissions, routing, API contracts, migrations, concurrency, reliability, observability, backward compatibility, generated artifacts, and test coverage.
    - Avoid style, naming, readability, and cosmetic feedback unless it creates a real maintenance or behavior risk.
@@ -42,6 +51,7 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - For agent-facing tools, CLIs, APIs, or generated instructions, prefer machine-safe contracts over human-friendly interaction patterns when they conflict.
    - If documentation, prompt, or skill/reference files changed, consider size or token growth against the base and flag unjustified growth when the repo treats prompt budget as a constraint.
    - For process, pipeline, release, permission, or cross-repo workflow changes, briefly fast-forward the post-merge behavior and ask what could fail once real users, reviewers, automation, or branch protection interact with it. Use this only when the blast radius justifies it; do not turn small local changes into over-engineering exercises.
+   - Classify each concern as a blocker, non-blocker, or repo/codebase gap. Do not call something a PR blocker when the target branch already has the same unresolved behavior.
 
 5. Verify findings before presenting them.
    - Open the exact file and line range.
@@ -93,6 +103,8 @@ When there are no findings, say that clearly and mention residual risk or tests 
 For a posted PR comment, compress to a single review-ready comment:
 
 ```markdown
+Code review summary
+
 I found one blocker and one non-blocking follow-up.
 
 Blocker:
@@ -112,9 +124,45 @@ If posting a formal review in a repo with review tasks or approval state:
 - Do not use checkboxes in the posted review unless the repo expects them.
 - Do not mention local paths, temp paths, hidden artifacts, investigation mechanics, or private workspace details.
 - If there are blockers, do not approve.
-- If there are no blockers and the user asked for a merge-readiness action, approve only when the local workflow and permissions make that appropriate.
+- If there are no blockers and the user asked for a merge-readiness action, approve only when the local workflow, permissions, and repo-local approval policy make that appropriate.
 - If you already approved and later find blockers, withdraw or remove that approval when the forge supports it and the user expects active review-state management.
 - If approval, task creation, or comment posting fails because of tooling or permissions, report that explicitly.
+
+## PR Comment And Task Workflow
+
+When the user asks to post the review or take review action:
+
+- Post exactly one main PR comment. Use the repo's expected title or default to `Code review summary`.
+- Include only net-new findings still relevant on the current head.
+- Separate blockers and non-blockers clearly.
+- Do not post approval-state words such as `ACCEPTED` or `REJECTED` unless the forge requires them.
+- Do not use checkboxes unless the repo explicitly expects them.
+- Do not mention reviewer names, personas, hidden process, or investigation mechanics.
+- Ensure there is exactly one open review-address task when the repo supports tasks and the local policy expects one. Treat the task text as a repo-local runtime input; default to `Address review comments before merge.` only when no better local convention exists.
+- If an equivalent open task already exists, do not create another.
+- If there are blockers, do not approve and keep the review-address task open.
+- If there are no blockers and no major non-blockers, approve only when the repo-local approval policy permits it; keep or resolve the review-address task according to repo policy.
+- If approval, task creation, or comment posting fails because of tooling or permissions, report that explicitly in the final user update.
+
+## Output Hygiene
+
+Use repo-relative paths in review text. Never include local paths, absolute
+paths, temp paths, sandbox paths, machine-specific paths, session IDs,
+stdout/stderr temp file locations, local worktree references, or hidden
+internal artifact names.
+
+Before posting, remove anything that is not useful to a repo reviewer.
+
+## Final User Update
+
+After posting or approving, include the PR comment link when available, whether
+the PR was approved or not approved, whether the review-address task was
+created or already existed, and a brief blocker status.
+
+## Editing During Reviews
+
+Default to review-only behavior. Do not modify the PR unless the user asks for
+fixes.
 
 ## Personalization Knobs
 

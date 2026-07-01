@@ -1,6 +1,6 @@
 ---
 name: pr-re-review
-description: Portable pull-request re-review workflow after updates, combining prior-comment verification with a full current-head review. Use when an agent is asked to check a PR again, verify whether review comments were addressed, inspect the latest delta, decide what still blocks merge, or produce an updated review after new commits on any GitHub, Bitbucket, GitLab, internal forge, or local repository workflow.
+description: Portable pull-request re-review workflow after updates, combining prior-comment verification with a full current-head review, non-redundant follow-up comments, review-task handling, and guarded approval. Use when an agent is asked to check a PR again, verify whether review comments were addressed, inspect the latest delta, decide what still blocks merge, approve an unblocked update, or produce an updated review after new commits on any GitHub, Bitbucket, GitLab, internal forge, or local repository workflow.
 ---
 
 # PR Re-review
@@ -35,7 +35,7 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Compare old head to new head for changed commits and files.
    - Separately inspect the full PR diff against target branch for regressions that the delta may hide.
    - Read author replies and resolved/unresolved threads before deciding whether something remains open.
-   - Read the original review summary and any review-address task before adding new findings.
+   - Read the original review summary, open tasks, and any review-address task before adding new findings.
 
 3. Classify each prior concern.
    - `Resolved`: the code or tests now address the issue.
@@ -61,6 +61,7 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Call out unnecessary complexity, redundancy, or over-engineering when it creates a correctness, maintainability, security, or operational risk.
    - For process, pipeline, release, permission, or cross-repo workflow changes, briefly fast-forward the post-merge behavior and check likely failure modes from real users, automation, reviewers, or branch protection. Keep this blast-radius based; do not require heavyweight redesign for small local changes.
    - If a finding is merge-blocking, include a brief severity rationale explaining why it must block merge rather than land as a follow-up. If that rationale is weak, downgrade it or ask a question.
+   - Apply the same finding bar, output hygiene, manual-validation expectations, and repo-local approval policy as `pr-review`.
 
 ## Output Shape
 
@@ -95,9 +96,14 @@ For posted follow-up reviews:
 - Use human-readable Markdown structure: short headings, concise bullets, and clear remaining/new finding sections.
 - Do not repeat fixed issues except as a short status line.
 - Keep review-address tasks open or resolve them according to the repo's policy.
-- If there are no blockers and the user asked for merge-readiness action, approve only when the local workflow and permissions make that appropriate.
+- If there are no blockers, no major non-blockers, and the user asked for merge-readiness action, approve only when the local workflow, permissions, and repo-local approval policy make that appropriate.
 - If you previously approved but the re-review finds blockers, withdraw or remove that approval when the forge supports it and the user expects active review-state management.
 - If approval, task creation, or comment posting fails because of tooling or permissions, report that explicitly.
+
+When posting a follow-up to a PR that already has a review-address task, reuse
+that task instead of creating another. If the repo policy expects a task and
+none exists, create exactly one equivalent task before approving or leaving the
+PR blocked.
 
 ## Personalization Knobs
 

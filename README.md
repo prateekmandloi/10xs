@@ -32,6 +32,10 @@ Each skill is designed to discover local context before acting:
 Personalize only the small `Personalization Knobs` section unless the workflow
 itself needs to change.
 
+For comprehensive repo-local review behavior, keep 10xs generic and add local
+defaults in the consuming repo. See [`skills.md`](skills.md#building-comprehensive-repo-local-review-skills)
+for the pattern.
+
 ## Repo Structure
 
 ```text

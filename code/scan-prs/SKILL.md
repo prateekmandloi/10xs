@@ -1,6 +1,6 @@
 ---
 name: scan-prs
-description: Portable pull-request action scanning workflow. Use when an agent is asked to find PRs needing review, re-review, refresh, response, merge, follow-up, or escalation across a repo, organization, workspace, team, internal forge, or local checkout, and to prioritize the user's next actions.
+description: Portable pull-request action scanning workflow that routes PRs into fresh review, re-review, refresh, response, merge-readiness, task follow-up, or escalation. Use when an agent is asked to find PRs needing review, re-review, refresh, response, merge, approval, follow-up, or escalation across a repo, organization, workspace, team, internal forge, or local checkout, and to prioritize the user's next actions.
 ---
 
 # Scan PRs
@@ -30,10 +30,11 @@ Treat this skill as a workflow template, not a repo-specific dashboard.
    - Include blocked PRs where the user is likely the next responder.
 
 3. Classify each PR into action buckets.
-   - `Review`: user or team is requested, no response yet, or meaningful new commits landed after prior review.
+   - `Review`: user or team is requested, no response yet, and the PR has not yet gone through the fresh `pr-review` workflow.
    - `Re-review`: user already reviewed or commented, author pushed updates, and unresolved risk may remain.
    - `Respond`: someone asked the user a question, requested changes from the user, or CI/reviewer feedback needs owner action.
    - `Refresh`: user's PR is stale, conflicted, failing due to drift, or behind target branch.
+   - `Approve/merge-readiness`: PR appears reviewed, green, unblocked, and needs approval or final merge-readiness action.
    - `Merge/land`: user's PR is approved and checks are green, but still open.
    - `Close/drop`: PR appears obsolete, superseded, or already landed elsewhere.
    - `Watch`: relevant but no immediate user action.
@@ -44,7 +45,7 @@ Treat this skill as a workflow template, not a repo-specific dashboard.
    - Avoid noisy lists. Prefer the smallest set of PRs with a concrete next action.
 
 5. Optionally hand off to action skills.
-   - Use `pr-review` for a selected new review.
+   - Use `pr-review` for a selected fresh review, including posting one summary comment, task creation, and guarded approval when requested.
    - Use `pr-re-review` for an updated PR after prior feedback.
    - Use `pr-refresh` for a stale or conflicted user-owned PR.
 
