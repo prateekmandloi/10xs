@@ -64,6 +64,18 @@ Treat this skill as a workflow template, not a repo-specific playbook.
 
 Only report a finding when it is actionable, grounded in evidence, and likely to matter.
 
+## Functional Area Lenses
+
+Use these lenses selectively after identifying the PR's functional area. They are prompts for deeper review, not a mandatory checklist for every PR.
+
+- **Contract surfaces:** Check CLI/API/UI grammar, schemas, help text, docs, generated catalogs, compatibility aliases, output envelopes, error semantics, and machine-readable fields against actual runtime behavior.
+- **Runtime boundaries:** For browser, embedded, worker, serverless, local CLI, or SDK hosts, verify environment, fetch/network, storage, auth, cancellation, timeout, and filesystem assumptions. Watch process-global patches, shared mutable state, and concurrent execution.
+- **Auth, security, and permissions:** Treat login/logout/revoke, token refresh, delegated auth, scope or permission manifests, secret storage, redaction, outbound headers, setup/install auth, and destructive-action guards as high-risk.
+- **Data and content mutation:** Check canonical versus legacy paths, serialization formats, version/snapshot/ETag handling, optimistic concurrency, idempotency, rollback, partial writes, binary/media handling, and user-visible format preservation.
+- **Search, ranking, and discovery:** Verify pagination, truncation, partial failures, connector/provider state, stale caches, confidence or evidence fields, ranking/filter semantics, and warnings that both humans and machines need.
+- **Release, install, packaging, and CI:** Check package-manager assumptions, workspace filters, lockfiles, generated artifacts, publish order, installer/uninstaller paths, changelog or docs mirrors, branch protection, and pipeline behavior after merge.
+- **Docs-only or tests-only changes:** Confirm they match the actual runtime contract, but do not invent live-validation work unless the PR changes behavior that automated tests cannot prove.
+
 Each finding should include:
 
 - Severity marker such as `[P0]`, `[P1]`, `[P2]`, or `[P3]`.

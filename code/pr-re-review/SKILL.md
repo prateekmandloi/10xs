@@ -59,9 +59,21 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Look for previously missed issues as well as new issues introduced by the fix.
    - Pay extra attention when the PR is large, stacked, rebased, conflict-resolved, security-sensitive, dependency-heavy, or the earlier review had few or no findings.
    - Call out unnecessary complexity, redundancy, or over-engineering when it creates a correctness, maintainability, security, or operational risk.
+   - Re-apply portable functional-area lenses from a fresh review: contract surfaces, runtime boundaries, auth/security/permissions, data/content mutation, search/discovery/ranking, release/install/packaging/CI, and docs-only or tests-only contract drift. Use only the lenses relevant to the PR; do not turn every re-review into a broad architecture audit.
    - For process, pipeline, release, permission, or cross-repo workflow changes, briefly fast-forward the post-merge behavior and check likely failure modes from real users, automation, reviewers, or branch protection. Keep this blast-radius based; do not require heavyweight redesign for small local changes.
    - If a finding is merge-blocking, include a brief severity rationale explaining why it must block merge rather than land as a follow-up. If that rationale is weak, downgrade it or ask a question.
    - Apply the same finding bar, output hygiene, manual-validation expectations, and repo-local approval policy as `pr-review`.
+
+## Functional Area Lenses For Follow-up Reviews
+
+Use this compact lens map during the full current-head pass, especially when the original review was narrow or mostly comment-closure focused:
+
+- Contract surfaces: runtime behavior must match CLI/API/UI grammar, schemas, help/docs, generated metadata, compatibility aliases, output shape, and error semantics.
+- Runtime boundaries: host-specific code must preserve environment, network, storage, auth, cancellation, timeout, filesystem, global-state, and concurrency contracts.
+- Auth/security/permissions: token handling, refresh/revoke/logout, delegated auth, scope or permission manifests, secret redaction, outbound headers, setup/install auth, and destructive actions remain security-sensitive after fixes.
+- Data/content mutation: canonical paths, serialization formats, version/snapshot/ETag handling, idempotency, rollback, partial writes, media/binary handling, and format preservation must survive the update.
+- Search/discovery/ranking: pagination, truncation, partial failures, provider state, stale caches, confidence/evidence fields, ranking/filter semantics, and machine-readable warnings should still be coherent.
+- Release/install/packaging/CI: package manager assumptions, workspace filters, lockfiles, generated artifacts, publish order, installer/uninstaller behavior, docs/changelog mirrors, branch protection, and pipelines should match the latest head.
 
 ## Output Shape
 

@@ -38,6 +38,7 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - For `pushback`, reply concisely with evidence when the comment is incorrect, stale, already handled, or conflicts with the intended architecture.
    - For `question`, ask a focused follow-up and do not guess.
    - For `defer`, explain why the item belongs outside this PR and point to the follow-up path when one exists.
+   - Identify the feedback's functional area before editing so the fix preserves the right contract: contract surface, runtime boundary, auth/security/permission, data/content mutation, search/discovery/ranking, release/install/packaging/CI, docs-only, or tests-only.
 
 4. Refresh from the live target branch.
    - Fetch the target branch and PR branch.
@@ -50,6 +51,9 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Run focused tests for the changed behavior plus cheap required checks.
    - If broad tests fail due to unrelated target-branch drift, distinguish that from refresh failure.
    - Broaden validation when the feedback touches shared contracts, CLI/API grammar, auth/tokens/scopes, output shape, destructive behavior, generated instructions, or agent-mode behavior.
+   - For runtime-boundary fixes, include validation for the relevant host assumptions: environment, network/fetch, storage, auth, cancellation/timeouts, filesystem, global state, and concurrency.
+   - For release/install/package fixes, check the actual package-manager, workspace, lockfile, generated-artifact, publish, installer, docs/changelog, and CI path that would run after merge.
+   - For docs-only or tests-only feedback, verify the artifact now matches the runtime contract; do not add unrelated live-validation burden unless behavior changed.
 
 6. Commit, push, and update review state.
    - Follow repo commit rules. Stage only files for the current PR.
