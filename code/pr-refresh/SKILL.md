@@ -1,6 +1,6 @@
 ---
 name: pr-refresh
-description: Portable pull-request refresh workflow with reviewer-feedback triage, safe branch update, validation, review-task state handling, and concise PR summary posting. Use when an agent is asked to check whether a PR is still relevant, address reviewer feedback, reply to review comments, update it from the target branch, rebase or merge latest main, resolve conflicts, regenerate artifacts, run validation, push with lease, post an addressed-comments summary, or close out an old branch without losing local work.
+description: Portable pull-request refresh workflow with reviewer-feedback triage, safe branch update, validation, review-task state handling, and concise PR summary posting. Use when an agent is asked to check whether a PR is still relevant, address reviewer feedback, reply to review comments, update it from the target branch, rebase or merge latest main, resolve conflicts, regenerate artifacts, run validation, push with lease, reply in each original review thread and also post a top-level addressed-comments summary, or close out an old branch without losing local work.
 ---
 
 # PR Refresh
@@ -62,7 +62,9 @@ Treat this skill as a workflow template, not a repo-specific playbook.
    - Add changelog, changeset, release note, or session log artifacts only when the repo expects them.
    - Use `--force-with-lease` for rebased branches.
    - Verify the PR now points at the pushed head and checks have started or passed when available.
-   - Post one concise summary comment when the workflow expects it: blockers, non-blockers, addressed items, pushed-back items, questions, validation, commit hash, and remaining blockers.
+   - Always reply in the original review thread for each item you handled. Use the forge's threaded-reply mechanism (for example a `reply-to`/`in-reply-to` on the specific comment or review-thread ID) so the reviewer or bot that raised the point is notified in place; state what changed and the commit hash, and for deferrals link the follow-up path. Do not close a thread's point with only a new top-level comment.
+   - In addition to the in-thread replies, post exactly one concise top-level summary comment when the workflow expects it: blockers, non-blockers, addressed items, pushed-back items, questions, validation, commit hash, and remaining blockers. Thread replies and the summary are both required on a refresh, not alternatives.
+   - When a handled item has no existing thread to reply to (for example the point was raised on a different PR, or the finding is new), the top-level summary is sufficient for that item; reference the originating thread or PR when one exists.
    - Reuse the existing review-address task instead of creating duplicates.
    - Resolve or leave review-address tasks according to repo policy only after each tracked item is handled by a fix, pushback reply, clarifying question, or explicit deferral.
    - Summarize relevance, refresh method, comments handled, conflicts, validation, pushed state, and remaining risks.
@@ -89,6 +91,7 @@ Adapt these to the user or repo when known:
 - Whether stale PRs should be closed, refreshed, or converted into regression hardening.
 - Required generation commands, smoke tests, and CI checks.
 - Whether to post a PR comment after refresh.
+- Whether the forge supports threaded replies (`reply-to`/`in-reply-to`); when it does, in-thread replies plus a top-level summary are both required.
 - Preferred backup branch naming.
 - Review item outcomes and task handling: fix, pushback, question, defer, resolve, or leave open.
 - Required local artifacts before commit: changelog, changeset, session log, generated docs, or none.
@@ -129,6 +132,16 @@ git push --force-with-lease
 ```
 
 Never run destructive cleanup such as hard reset, branch deletion, or stash dropping unless the user explicitly asks or it is obviously limited to temporary artifacts you created.
+
+## Posting Back
+
+A refresh has two required posting steps when the forge supports comment threads:
+
+1. Threaded replies: reply under each original review comment/thread you handled,
+   using the forge's `reply-to`/`in-reply-to` mechanism. Keep each reply to the
+   point: what changed, the commit hash, and for a deferral the follow-up path.
+2. One top-level summary comment (below). If the forge has no thread concept, the
+   summary alone is acceptable; otherwise both are required.
 
 ## Summary Comment
 
