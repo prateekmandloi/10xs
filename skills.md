@@ -8,6 +8,7 @@ This repo is a portable, agent-agnostic skill library. The repo name should be
 Keep the repo organized by broad work domain:
 
 - `code/` - code, pull-request, review, refresh, and engineering workflow skills.
+- `work/` - work planning, acceptance criteria, and verification across domains.
 
 Each skill lives in its own folder with a required `SKILL.md`:
 

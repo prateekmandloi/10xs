@@ -7,12 +7,15 @@ description: Portable pull-request re-review workflow after updates, combining p
 
 ## Review Contract
 
-A re-review is not only a closure checklist. It has two required passes:
+A re-review is not only a closure checklist. It has three required passes:
 
 1. Verify whether prior review comments were addressed.
 2. Review the full current PR head against the target branch with the same critical lens as a fresh review.
+3. Actively hunt for new bugs and gaps — always, on every re-review, even when all prior comments look fixed and even when the previous review found nothing. This pass is mandatory and cannot be skipped or shortened because the delta looks small, CI is green, or the author is trusted.
 
 Do not approve based on comment closure alone. The current head may still contain previously missed issues, new regressions, bad conflict resolutions, stale generated artifacts, dependency drift, or untouched changed files that deserve blockers or non-blocking findings.
+
+For the new-issue hunt, adopt a fresh, adversarial lens rather than confirming the prior review: assume nothing was caught yet, and try to break the current head. For high-blast-radius changes (auth, permissions, install/release, migrations, data mutation, cross-repo/CI/pipeline, or large/rebased/conflict-resolved diffs), run an independent pass — either a deliberate second self-pass or a delegated independent review — and then verify any delegated findings yourself against the exact files and lines before reporting or acting on them. If the hunt surfaces nothing after a genuine effort, say so explicitly; silence is not the same as a completed hunt.
 
 ## Portability Contract
 

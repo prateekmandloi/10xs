@@ -1,0 +1,6 @@
+interface:
+  display_name: "Surefoot"
+  short_description: "Plan clearly. Verify the work. Keep your judgment."
+  default_prompt: "Use $surefoot to plan and complete this task with clear success criteria, proportionate verification, and visible decisions."
+policy:
+  allow_implicit_invocation: true
