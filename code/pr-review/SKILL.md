@@ -147,11 +147,17 @@ If posting a formal review in a repo with review tasks or approval state:
 
 ## PR Comment And Task Workflow
 
-When the user asks to review a specific live PR, default to taking review action
-unless they explicitly ask for local-only, draft-only, or no posting. When the
-user asks to post the review or take review action:
+Always post the review as a PR comment by default. When asked to review a
+specific live PR, post the review comment even if the user did not explicitly say
+"post" — do not stop at a local-only summary. Skip posting only when the user
+explicitly asks for local-only, draft-only, or no posting. When there are no
+findings, still post a short review summary confirming the review and its
+residual risk. When posting the review or taking review action:
 
 - Post exactly one main PR comment. Use the repo's expected title or default to `Code review summary`.
+- Discover the forge's comment-create command first; some CLIs take the body only
+  as an inline string flag and have no file/body-file flag, so build the markdown
+  in a variable and pass it inline.
 - Include only net-new findings still relevant on the current head.
 - Separate blockers and non-blockers clearly.
 - Do not post approval-state words such as `ACCEPTED` or `REJECTED` unless the forge requires them.

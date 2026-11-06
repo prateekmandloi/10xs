@@ -11,8 +11,9 @@ line, and review conventions at runtime.
 
 | Skill | Purpose |
 | --- | --- |
-| [`code/pr-review`](code/pr-review/SKILL.md) | First-pass pull-request review with live PR context, comment dedupe, findings, validation, and optional review posting. |
-| [`code/pr-re-review`](code/pr-re-review/SKILL.md) | Follow-up review after changes, combining prior-comment verification with a full current-head review for remaining, new, or previously missed risk. |
+| [`work/surefoot`](work/surefoot/SKILL.md) | Plan work with clear acceptance criteria, blind-spot checks, proportionate verification and visible decisions; optional strict supervision. |
+| [`code/pr-review`](code/pr-review/SKILL.md) | First-pass pull-request review with live PR context, comment dedupe, findings, validation, and default review posting unless explicitly kept local. |
+| [`code/pr-re-review`](code/pr-re-review/SKILL.md) | Follow-up review after changes, combining prior-comment verification with a full current-head review and an explicit hunt for new or previously missed issues. |
 | [`code/pr-refresh`](code/pr-refresh/SKILL.md) | Safely address review feedback, refresh branches, validate, push, and summarize what changed. |
 | [`code/scan-prs`](code/scan-prs/SKILL.md) | Scan pull requests for review, re-review, response, refresh, merge, close, or watch actions. |
 
@@ -39,6 +40,10 @@ for the pattern.
 ## Repo Structure
 
 ```text
+work/
+  surefoot/
+    SKILL.md
+    agents/openai.yaml
 code/
   pr-review/
     SKILL.md
